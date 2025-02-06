@@ -1,5 +1,7 @@
 import { useSignIn } from '@clerk/clerk-expo';
+import { FontAwesome } from '@expo/vector-icons';
 import { Link, Redirect, useRouter } from 'expo-router';
+import React from 'react';
 import {
   Text,
   TextInput,
@@ -14,10 +16,9 @@ import {
   Modal,
   Image,
 } from 'react-native';
-import React from 'react';
 import { Toast } from 'toastify-react-native';
+
 import { useOAuthFlow } from '../../utils/oauth';
-import { FontAwesome } from '@expo/vector-icons';
 
 export default function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -28,17 +29,14 @@ export default function SignInScreen() {
   const [password, setPassword] = React.useState('');
   const [code, setCode] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
-  const [redirectTo, setRedirectTo] = React.useState(null);
   const [showPasswordModal, setShowPasswordModal] = React.useState(false);
   const [showOTPModal, setShowOTPModal] = React.useState(false);
-  const [signInAttempt, setSignInAttempt] = React.useState(null);
 
   const onEmailSubmit = React.useCallback(async () => {
     if (!isLoaded || !emailAddress) return;
     setIsLoading(true);
 
     try {
-      // First check if the user exists
       const { supportedFirstFactors } = await signIn.create({
         identifier: emailAddress,
       });
@@ -48,7 +46,6 @@ export default function SignInScreen() {
       if (passwordFactor) {
         setShowPasswordModal(true);
       } else {
-        // If no password is set, proceed with email code
         await signIn.create({
           identifier: emailAddress,
           strategy: 'email_code',
@@ -78,8 +75,6 @@ export default function SignInScreen() {
         Toast.success('Welcome back!');
         router.replace('/(app)');
       } else {
-        // If 2FA is enabled, show OTP modal
-        setSignInAttempt(attempt);
         setShowOTPModal(true);
       }
     } catch (err) {
@@ -113,14 +108,10 @@ export default function SignInScreen() {
 
   if (!isLoaded) {
     return (
-      <View className="flex-1 bg-white items-center justify-center">
+      <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#FF0000" />
       </View>
     );
-  }
-
-  if (redirectTo) {
-    return <Redirect href={redirectTo} />;
   }
 
   return (
@@ -144,11 +135,10 @@ export default function SignInScreen() {
                 <TouchableOpacity
                   onPress={() => onSelectOAuth('oauth_google')}
                   className="w-full flex-row items-center justify-center space-x-3 rounded-full border border-gray-300 bg-white px-4 py-3">
-                  <Image
-                    source={require('../../assets/google.png')}
-                    className="h-6 w-6"
-                  />
-                  <Text className="text-base font-medium text-black ml-2">Continue with Google</Text>
+                  <Image source={require('../../assets/google.png')} className="h-6 w-6" />
+                  <Text className="ml-2 text-base font-medium text-black">
+                    Continue with Google
+                  </Text>
                 </TouchableOpacity>
               </View>
 

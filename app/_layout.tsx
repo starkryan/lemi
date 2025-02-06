@@ -1,12 +1,13 @@
 import '../global.css';
 import 'react-native-url-polyfill/auto';
-import { getRandomValues as expoCryptoGetRandomValues } from 'expo-crypto';
 import { ClerkProvider } from '@clerk/clerk-expo';
+import { getRandomValues as expoCryptoGetRandomValues } from 'expo-crypto';
 import { Slot } from 'expo-router';
-import { tokenCache } from '../utils/cache';
-import Toast from 'react-native-toast-message';
 import * as React from 'react';
 import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { tokenCache } from '../utils/cache';
 
 // Polyfill for crypto.getRandomValues
 if (typeof crypto === 'undefined') {
@@ -24,10 +25,7 @@ if (!publishableKey) {
 
 export default function RootLayout() {
   return (
-    <ClerkProvider 
-      publishableKey={publishableKey}
-      tokenCache={tokenCache}
-    >
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <View className="flex-1 bg-[#282828]">
         <Slot />
         <Toast />

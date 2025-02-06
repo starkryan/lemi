@@ -1,6 +1,7 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import * as Clipboard from 'expo-clipboard';
+import Constants from 'expo-constants';
 import * as FileSystem from 'expo-file-system';
 import React, { useState } from 'react';
 import {
@@ -21,8 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Environment configuration (should use actual environment variables in production)
 const CONFIG = {
-  GEMINI_API_KEY:
-    process.env.EXPO_PUBLIC_GEMINI_API_KEY || 'AIzaSyAs4vFUhoajF79bzBdpP1fgVNgPa8whAEU',
+  GEMINI_API_KEY: Constants.expoConfig?.extra?.GOOGLE_GEMINI_API_KEY || '',
 };
 
 interface DropdownSelectProps {

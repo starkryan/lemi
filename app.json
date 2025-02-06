@@ -6,6 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "extra": {
+      "GOOGLE_GEMINI_API_KEY":"AIzaSyAs4vFUhoajF79bzBdpP1fgVNgPa8whAEU"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

@@ -1,111 +1,114 @@
-import * as React from 'react'
-import { 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  View, 
-  KeyboardAvoidingView, 
-  Platform, 
-  ScrollView, 
-  Keyboard, 
+import { useSignUp } from '@clerk/clerk-expo';
+import { FontAwesome } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
+import * as React from 'react';
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  Image
-} from 'react-native'
-import { useSignUp } from '@clerk/clerk-expo'
-import { Link, Redirect, useRouter } from 'expo-router'
-import { Toast } from 'toastify-react-native'
-import { useOAuthFlow } from '../../utils/oauth'
-import { FontAwesome } from '@expo/vector-icons'
+  Image,
+} from 'react-native';
+import { Toast } from 'toastify-react-native';
+
+import { useOAuthFlow } from '../../utils/oauth';
 
 export default function SignUpScreen() {
-  const { isLoaded, signUp, setActive } = useSignUp()
-  const router = useRouter()
-  const onSelectOAuth = useOAuthFlow()
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const router = useRouter();
+  const onSelectOAuth = useOAuthFlow();
 
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [pendingVerification, setPendingVerification] = React.useState(false)
-  const [code, setCode] = React.useState('')
-  const [isPasswordValid, setIsPasswordValid] = React.useState(true)
-  const [showPassword, setShowPassword] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [emailAddress, setEmailAddress] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [pendingVerification, setPendingVerification] = React.useState(false);
+  const [code, setCode] = React.useState('');
+  const [isPasswordValid, setIsPasswordValid] = React.useState(true);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   // Password validation
   const validatePassword = (pass: string) => {
-    const hasUpperCase = /[A-Z]/.test(pass)
-    const hasLowerCase = /[a-z]/.test(pass)
-    const hasNumber = /[0-9]/.test(pass)
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pass)
-    const isLongEnough = pass.length >= 8
+    const hasUpperCase = /[A-Z]/.test(pass);
+    const hasLowerCase = /[a-z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+    const isLongEnough = pass.length >= 8;
 
-    return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough
-  }
+    return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough;
+  };
 
   const onPasswordChange = (pass: string) => {
-    setPassword(pass)
-    setIsPasswordValid(validatePassword(pass))
-  }
+    setPassword(pass);
+    setIsPasswordValid(validatePassword(pass));
+  };
 
   const onSignUpPress = async () => {
-    if (!isLoaded) return
-    setIsLoading(true)
+    if (!isLoaded) return;
+    setIsLoading(true);
 
     if (!isPasswordValid) {
-      Toast.error('Password must contain at least 8 characters, including uppercase, lowercase, number, and special character')
-      setIsLoading(false)
-      return
+      Toast.error(
+        'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character'
+      );
+      setIsLoading(false);
+      return;
     }
 
     try {
       await signUp.create({
         emailAddress,
         password,
-      })
+      });
 
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-      setPendingVerification(true)
-      Toast.info('Check your email for a verification code')
+      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+      setPendingVerification(true);
+      Toast.info('Check your email for a verification code');
     } catch (err: any) {
       if (err.errors?.[0]?.code === 'form_password_pwned') {
-        Toast.error('Please choose a more secure password. This one has been compromised.')
+        Toast.error('Please choose a more secure password. This one has been compromised.');
       } else {
-        Toast.error(err.errors?.[0]?.message || 'Failed to sign up')
+        Toast.error(err.errors?.[0]?.message || 'Failed to sign up');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const onVerifyPress = async () => {
-    if (!isLoaded) return
-    setIsLoading(true)
+    if (!isLoaded) return;
+    setIsLoading(true);
 
     try {
       const signUpAttempt = await signUp.attemptEmailAddressVerification({
         code,
-      })
+      });
 
       if (signUpAttempt.status === 'complete') {
-        await setActive({ session: signUpAttempt.createdSessionId })
-        Toast.success('Account created successfully!')
-        router.replace('/(app)')
+        await setActive({ session: signUpAttempt.createdSessionId });
+        Toast.success('Account created successfully!');
+        router.replace('/(app)');
       } else {
-        Toast.error('Verification incomplete. Please try again.')
+        Toast.error('Verification incomplete. Please try again.');
       }
     } catch (err: any) {
-      Toast.error(err.errors?.[0]?.message || 'Failed to verify email')
+      Toast.error(err.errors?.[0]?.message || 'Failed to verify email');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (!isLoaded) {
     return (
-      <View className="flex-1 bg-white items-center justify-center">
+      <View className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#FF0000" />
       </View>
-    )
+    );
   }
 
   return (
@@ -166,11 +169,8 @@ export default function SignUpScreen() {
                     <TouchableOpacity
                       onPress={() => onSelectOAuth('oauth_google')}
                       className="w-full flex-row items-center justify-center space-x-3 rounded-full border border-gray-300 bg-white px-4 py-3">
-                      <Image
-                        source={require('../../assets/google.png')}
-                        className="h-6 w-6"
-                      />
-                      <Text className="text-base font-medium text-black ml-2">
+                      <Image source={require('../../assets/google.png')} className="h-6 w-6" />
+                      <Text className="ml-2 text-base font-medium text-black">
                         Continue with Google
                       </Text>
                     </TouchableOpacity>
@@ -225,8 +225,8 @@ export default function SignUpScreen() {
                       </View>
                       {!isPasswordValid && password.length > 0 && (
                         <Text className="mt-2 text-sm text-red-500">
-                          Password must contain at least 8 characters, including uppercase, lowercase,
-                          number, and special character
+                          Password must contain at least 8 characters, including uppercase,
+                          lowercase, number, and special character
                         </Text>
                       )}
                     </View>
@@ -264,5 +264,5 @@ export default function SignUpScreen() {
         </KeyboardAvoidingView>
       </View>
     </TouchableWithoutFeedback>
-  )
+  );
 }
