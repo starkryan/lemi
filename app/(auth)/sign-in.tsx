@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   Modal,
   Image,
+  Pressable,
 } from 'react-native';
 import { Toast } from 'toastify-react-native';
 
@@ -73,7 +74,12 @@ export default function SignInScreen() {
       if (attempt.status === 'complete') {
         await setActive({ session: attempt.createdSessionId });
         Toast.success('Welcome back!');
-        router.replace('/(app)');
+        try {
+          router.replace('/(app)');
+        } catch (navError) {
+          console.error('Navigation error:', navError);
+          Toast.error('Error navigating to app');
+        }
       } else {
         setShowOTPModal(true);
       }
@@ -106,10 +112,38 @@ export default function SignInScreen() {
     }
   }, [isLoaded, code]);
 
+  // Add cleanup effect
+  React.useEffect(() => {
+    return () => {
+      setEmailAddress('');
+      setPassword('');
+      setCode('');
+      setIsLoading(false);
+      setShowPasswordModal(false);
+      setShowOTPModal(false);
+    };
+  }, []);
+
+  // Update the navigation to sign-up
+  const navigateToSignUp = () => {
+    setEmailAddress(''); // Clear state before navigation
+    setPassword('');
+    router.replace('/(auth)/sign-up');
+  };
+
   if (!isLoaded) {
     return (
       <View className="flex-1 items-center justify-center bg-[#343541]">
         <ActivityIndicator size="large" color="#10a37f" />
+      </View>
+    );
+  }
+
+  // Add an error boundary
+  if (!signIn) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#343541]">
+        <Text className="text-white">Error loading authentication</Text>
       </View>
     );
   }
@@ -182,11 +216,9 @@ export default function SignInScreen() {
               {/* Sign Up Link */}
               <View className="mt-6 flex-row justify-center">
                 <Text className="text-gray-300">Don't have an account? </Text>
-                <Link href="/(auth)/sign-up" asChild>
-                  <TouchableOpacity>
-                    <Text className="font-semibold text-[#10a37f]">Sign up</Text>
-                  </TouchableOpacity>
-                </Link>
+                <Pressable onPress={navigateToSignUp}>
+                  <Text className="font-semibold text-[#10a37f]">Sign up</Text>
+                </Pressable>
               </View>
             </View>
           </ScrollView>

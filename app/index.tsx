@@ -1,32 +1,35 @@
-import { useAuth } from '@clerk/clerk-expo';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Link, useRouter, Redirect } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
+import { useAuth } from "@clerk/clerk-expo";
+import { Link, useRouter } from "expo-router";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   ActivityIndicator,
   Text,
-  TouchableOpacity,
+  Pressable,
   SafeAreaView,
   Image,
-  Dimensions,
   Animated,
-} from 'react-native';
-
-const { width } = Dimensions.get('window');
+} from "react-native";
 
 const GetStartedScreen = () => {
   const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  // Initialize animations only once
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
   useEffect(() => {
     if (isSignedIn) {
-      router.replace('/(app)');
-      return;
+      router.push("/(app)");
+    } else if (!hasAnimated) {
+      startAnimation();
+      setHasAnimated(true);
     }
+  }, [isSignedIn, hasAnimated]);
 
+  const startAnimation = () => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -39,7 +42,7 @@ const GetStartedScreen = () => {
         useNativeDriver: true,
       }),
     ]).start();
-  }, [isSignedIn]);
+  };
 
   if (!isLoaded) {
     return (
@@ -49,10 +52,6 @@ const GetStartedScreen = () => {
     );
   }
 
-  if (isSignedIn) {
-    return <Redirect href="/(app)" />;
-  }
-
   return (
     <SafeAreaView className="flex-1 bg-[#343541]">
       <View className="flex-1">
@@ -60,20 +59,22 @@ const GetStartedScreen = () => {
         <Animated.View
           style={{
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: "center",
+            alignItems: "center",
             paddingHorizontal: 24,
             opacity: fadeAnim,
             transform: [{ translateY: slideAnim }],
-          }}>
+          }}
+        >
           <Image
-            source={require('../assets/splash.png')}
-            style={{ width: width * 0.5, height: width * 0.5 }}
-            resizeMode="contain"
+            source={require("../assets/google.png")}
+            className="w-32 h-32 object-contain"
           />
 
-          <Text className="mt-8 text-center text-3xl font-bold text-white">Welcome to Lemi</Text>
-          <Text className="mt-4 px-6 text-center text-base text-gray-300">
+          <Text className="mt-8 text-center text-3xl font-bold text-white">
+            Welcome to Lemi
+          </Text>
+          <Text className="mt-4 px-6 text-center text-base text-gray-200">
             Your AI-powered learning companion. Start exploring and learning today.
           </Text>
         </Animated.View>
@@ -81,17 +82,25 @@ const GetStartedScreen = () => {
         {/* Buttons Section */}
         <View className="gap-4 px-6 pb-12">
           <Link href="/(auth)/sign-up" asChild>
-            <TouchableOpacity className="w-full rounded-lg bg-[#10a37f] py-4 active:bg-[#0e906f]">
-              <Text className="text-center text-lg font-semibold text-white">Get Started</Text>
-            </TouchableOpacity>
+            <Pressable
+              className="w-full rounded-lg bg-[#10a37f] py-4"
+              android_ripple={{ color: "#0e906f" }}
+            >
+              <Text className="text-center text-lg font-semibold text-white">
+                Get Started
+              </Text>
+            </Pressable>
           </Link>
 
           <Link href="/(auth)/sign-in" asChild>
-            <TouchableOpacity className="w-full rounded-lg border border-gray-600 bg-transparent py-4 active:bg-gray-800">
+            <Pressable
+              className="w-full rounded-lg border border-gray-600 bg-transparent py-4"
+              android_ripple={{ color: "rgba(255,255,255,0.1)" }}
+            >
               <Text className="text-center text-lg font-semibold text-white">
                 I already have an account
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </Link>
         </View>
       </View>

@@ -73,10 +73,10 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, selected, onSe
               alignItems: 'center',
               paddingVertical: 6,
               paddingHorizontal: 8,
-              backgroundColor: isSelected ? '#e5e7eb' : 'white',
+              backgroundColor: isSelected ? CONFIG.THEME_COLOR + '20' : '#2a2b32',
             }}>
-            <AntDesign name="star" size={14} color="gray" />
-            <Text className="text-sm font-bold text-gray-700">{item.label}</Text>
+            <AntDesign name="star" size={14} color={isSelected ? CONFIG.THEME_COLOR : "gray"} />
+            <Text className="text-sm font-bold text-gray-300">{item.label}</Text>
             {isSelected && (
               <AntDesign name="check" size={14} color="#19C37D" style={{ marginLeft: 'auto' }} />
             )}
@@ -156,8 +156,8 @@ const MainPage = () => {
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
       const prompt = `
-        Create a YouTube script about: ${topic}
-        Target Audience: ${scriptOptions.audience.options[scriptOptions.audience.value]}
+        Create a YouTube script about: ${topic.trim()}
+        Target Audience: ${scriptOptions.audience.options[scriptOptions.audience.value].trim()}
         Style: ${scriptOptions.style.options[scriptOptions.style.value]}
         Duration: ${scriptOptions.duration.options[scriptOptions.duration.value]} minutes
         Age Group: ${scriptOptions.age.options[scriptOptions.age.value]}
@@ -178,7 +178,11 @@ const MainPage = () => {
         - Use only ${scriptOptions.language.options[scriptOptions.language.value]} language
         - Format in markdown with clear section headings
         - Keep paragraphs concise for readability
-      `;
+      `.trim();
+
+      if (!CONFIG.GEMINI_API_KEY) {
+        throw new Error('Missing API key configuration');
+      }
 
       const result = await model.generateContent(prompt);
       const generatedText = await result.response.text();
@@ -207,6 +211,13 @@ const MainPage = () => {
     }
   };
 
+  const updateScriptOption = (key: string, val: number) => {
+    setScriptOptions(prev => ({
+      ...prev,
+      [key]: { ...prev[key as keyof typeof prev], value: val }
+    }));
+  };
+
   const ActionButton = ({
     icon,
     text,
@@ -231,11 +242,7 @@ const MainPage = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1">
         <ScrollView keyboardShouldPersistTaps="handled" className="px-4">
-          {/* Header */}
-          <View className="items-center justify-center gap-2 py-6">
-            <AntDesign name="edit" size={32} color="#10a37f" />
-            <Text className="text-2xl font-bold text-white">Script Generator</Text>
-          </View>
+      
 
           {/* Topic Input */}
           <View className="mb-4">
@@ -253,18 +260,13 @@ const MainPage = () => {
 
           {/* Script Options */}
           <View className="flex-row flex-wrap">
-            {Object.entries(scriptOptions).map(([key, option]) => (
-              <View key={key} className="mb-4 w-1/2 px-2">
+            {Object.entries(scriptOptions).map(([key, option], index) => (
+              <View key={`${key}-${index}`} className="mb-4 w-1/2 px-2">
                 <DropdownSelect
                   label={key.toUpperCase()}
                   options={option.options}
                   selected={option.value}
-                  onSelect={(val) =>
-                    setScriptOptions((prev) => ({
-                      ...prev,
-                      [key]: { ...prev[key], value: val },
-                    }))
-                  }
+                  onSelect={(val) => updateScriptOption(key, val)}
                 />
               </View>
             ))}
