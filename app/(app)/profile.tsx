@@ -51,14 +51,14 @@ const Profile = () => {
         <View className="w-full space-y-3 px-4 mt-4">
           <TouchableOpacity
             onPress={() => alert("Edit Profile feature coming soon!")}
-            className="w-full rounded-lg bg-[#10a37f] py-4 active:bg-[#0e906f]"
+            className="w-full rounded-lg mt-4 bg-[#10a37f] py-4 active:bg-[#0e906f]"
           >
             <Text className="text-white text-center font-semibold">Edit Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => setShowSignOutModal(true)}
-            className="w-full rounded-lg border border-gray-600 bg-transparent py-4 active:bg-gray-800"
+            className="w-full rounded-lg mt-4 border border-red-600 bg-[#ff1100] py-4 active:bg-[#900e0e]"
           >
             <Text className="text-white text-center font-semibold">Sign Out</Text>
           </TouchableOpacity>
@@ -73,7 +73,7 @@ const Profile = () => {
         >
           <View className="flex-1 justify-center items-center bg-black/50">
             <View className="bg-[#343541] p-6 rounded-2xl w-[80%] items-center space-y-4">
-              <Text className="text-xl font-bold text-white">Sign Out</Text>
+              <Text className="text-xl font-bold text-red-500">Sign Out</Text>
               <Text className="text-gray-300 text-center">
                 Are you sure you want to sign out?
               </Text>
@@ -89,7 +89,7 @@ const Profile = () => {
                     setShowSignOutModal(false);
                     signOut();
                   }}
-                  className="flex-1 rounded-lg bg-[#10a37f] py-4 active:bg-[#0e906f]"
+                  className="flex-1 rounded-lg bg-[#ff1100] py-4 active:bg-[#900e0e]"
                 >
                   <Text className="text-center font-semibold text-white">Sign Out</Text>
                 </TouchableOpacity>

@@ -27,21 +27,21 @@ export default function Root({ children }: { children: React.ReactNode }) {
         */}
         <ScrollViewStyleReset />
 
-        {/* Using raw CSS styles as an escape-hatch to ensure the background color never flickers in dark-mode. */}
+        {/* Using raw CSS styles to ensure the background color matches the app theme */}
         <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
         {/* Add any additional <head> elements that you want globally available on web... */}
       </head>
-      <body>{children}</body>
+      <body className="bg-[#343541]">{children}</body>
     </html>
   );
 }
 
 const responsiveBackground = `
 body {
-  background-color: #fff;
+  background-color: #343541;
 }
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #000;
+    background-color: #343541;
   }
 }`;

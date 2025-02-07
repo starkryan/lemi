@@ -30,8 +30,12 @@ export default function AuthRoutesLayout() {
           contentStyle: {
             backgroundColor: '#343541',
           },
+          // Android navigation bar color
           navigationBarColor: '#343541',
-          statusBarColor: '#343541',
+          // Use headerStyle instead of statusBarColor
+          headerStyle: {
+            backgroundColor: '#343541'
+          }
         }}
       />
     </View>

@@ -42,7 +42,7 @@ export default function SignInScreen() {
         identifier: emailAddress,
       });
 
-      const passwordFactor = supportedFirstFactors.find((factor) => factor.strategy === 'password');
+      const passwordFactor = supportedFirstFactors?.find((factor) => factor.strategy === 'password');
 
       if (passwordFactor) {
         setShowPasswordModal(true);
@@ -53,8 +53,12 @@ export default function SignInScreen() {
         });
         setShowOTPModal(true);
       }
-    } catch (err) {
-      Toast.error(err.errors?.[0]?.message || 'Failed to sign in');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        Toast.error((err as any).errors?.[0]?.message || err.message);
+      } else {
+        Toast.error('Failed to sign in');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -83,8 +87,12 @@ export default function SignInScreen() {
       } else {
         setShowOTPModal(true);
       }
-    } catch (err) {
-      Toast.error(err.errors?.[0]?.message || 'Invalid password');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        Toast.error((err as any).errors?.[0]?.message || err.message);
+      } else {
+        Toast.error('Invalid password');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -105,8 +113,12 @@ export default function SignInScreen() {
         Toast.success('Welcome back!');
         router.replace('/(app)');
       }
-    } catch (err) {
-      Toast.error(err.errors?.[0]?.message || 'Invalid code');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        Toast.error((err as any).errors?.[0]?.message || err.message);
+      } else {
+        Toast.error('Invalid code');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -158,40 +170,47 @@ export default function SignInScreen() {
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <View className="flex-1 justify-center">
-              <View className="mb-8 px-6">
-                <Text className="mb-2 text-center text-3xl font-bold text-white">Sign in</Text>
+            <View className="flex-1 justify-center py-8">
+              <View className="mb-10 px-8">
+                <Text className="mb-3 text-center text-3xl font-bold text-white">Sign in</Text>
                 <Text className="text-center text-base text-gray-300">to continue to Lemi</Text>
               </View>
 
               {/* Social Login Button */}
-              <View className="mb-8 px-6">
+              <View className="mb-8 px-8">
                 <TouchableOpacity
-                  onPress={() => onSelectOAuth('oauth_google')}
-                  className="w-full flex-row items-center justify-center space-x-3 rounded-lg border border-gray-600 bg-transparent px-4 py-3">
-                  <Image source={require('../../assets/google.png')} className="h-6 w-6" />
-                  <Text className="ml-2 text-base font-medium text-white">
-                    Continue with Google
-                  </Text>
+                  onPress={onSelectOAuth}
+                  disabled={isLoading}
+                  className="w-full flex-row items-center justify-center space-x-3 rounded-xl border-2 border-gray-600 bg-transparent px-4 py-3.5">
+                  {isLoading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <>
+                      <Image source={require('../../assets/google.png')} className="h-6 w-6" />
+                      <Text className="text-base font-medium text-white ml-2">
+                        Continue with Google
+                      </Text>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
 
               {/* Divider */}
-              <View className="mb-8 flex-row items-center px-6">
+              <View className="mb-8 flex-row items-center px-8">
                 <View className="h-[1px] flex-1 bg-gray-600" />
                 <Text className="mx-4 text-gray-300">or</Text>
                 <View className="h-[1px] flex-1 bg-gray-600" />
               </View>
 
               {/* Email Input */}
-              <View className="mb-6 space-y-4 px-6">
+              <View className="space-y-5 px-8">
                 <View>
                   <Text className="mb-2 font-medium text-gray-300">Email address</Text>
                   <TextInput
-                    className="rounded-lg border border-gray-600 bg-transparent p-4 text-white"
+                    className="rounded-xl border-2 border-gray-600 bg-transparent p-4 text-white"
                     autoCapitalize="none"
                     value={emailAddress}
-                    placeholder="Enter your email"
+                    placeholder="Enter email"
                     placeholderTextColor="#9ca3af"
                     onChangeText={setEmailAddress}
                     keyboardType="email-address"
@@ -200,9 +219,9 @@ export default function SignInScreen() {
               </View>
 
               {/* Continue Button */}
-              <View className="px-6">
+              <View className="mt-8 px-8">
                 <TouchableOpacity
-                  className="w-full rounded-lg bg-[#10a37f] py-4 active:bg-[#0e906f]"
+                  className="rounded-xl bg-[#10a37f] p-4 shadow-sm active:bg-[#0e906f]"
                   onPress={onEmailSubmit}
                   disabled={isLoading}>
                   {isLoading ? (
@@ -220,6 +239,14 @@ export default function SignInScreen() {
                   <Text className="font-semibold text-[#10a37f]">Sign up</Text>
                 </Pressable>
               </View>
+
+              {/* Forgot Password Link */}
+              <View className="mt-4 flex-row justify-center">
+                <Pressable onPress={() => router.push('/(auth)/reset-password')}>
+                  <Text className="font-semibold text-[#10a37f]">Forgot password?</Text>
+                </Pressable>
+              </View>
+
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -234,7 +261,7 @@ export default function SignInScreen() {
           <TouchableWithoutFeedback onPress={() => setShowPasswordModal(false)}>
             <View className="flex-1 justify-end bg-black/50">
               <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-                <View className="rounded-t-3xl bg-[#343541] p-6">
+                <View className="rounded-t-3xl bg-[#343541] p-8">
                   <View className="mb-1 items-end">
                     <TouchableOpacity onPress={() => setShowPasswordModal(false)}>
                       <FontAwesome name="times" size={24} color="#9ca3af" />
@@ -242,7 +269,7 @@ export default function SignInScreen() {
                   </View>
                   <Text className="mb-4 text-2xl font-bold text-white">Enter Password</Text>
                   <TextInput
-                    className="mb-4 rounded-lg border border-gray-600 bg-transparent p-4 text-white"
+                    className="mb-4 rounded-xl border-2 border-gray-600 bg-transparent p-4 text-white"
                     placeholder="Enter your password"
                     placeholderTextColor="#9ca3af"
                     secureTextEntry
@@ -250,15 +277,13 @@ export default function SignInScreen() {
                     onChangeText={setPassword}
                   />
                   <TouchableOpacity
-                    className="rounded-lg bg-[#10a37f] p-4 active:bg-[#0e906f]"
+                    className="rounded-xl bg-[#10a37f] p-4 shadow-sm active:bg-[#0e906f]"
                     onPress={onPasswordSubmit}
                     disabled={isLoading}>
                     {isLoading ? (
                       <ActivityIndicator color="white" />
                     ) : (
-                      <Text className="text-center text-lg font-semibold text-white">
-                        Sign In
-                      </Text>
+                      <Text className="text-center text-lg font-semibold text-white">Sign In</Text>
                     )}
                   </TouchableOpacity>
                 </View>
@@ -277,20 +302,18 @@ export default function SignInScreen() {
           <TouchableWithoutFeedback onPress={() => setShowOTPModal(false)}>
             <View className="flex-1 justify-end bg-black/50">
               <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-                <View className="rounded-t-3xl bg-[#343541] p-6">
+                <View className="rounded-t-3xl bg-[#343541] p-8">
                   <View className="mb-1 items-end">
                     <TouchableOpacity onPress={() => setShowOTPModal(false)}>
                       <FontAwesome name="times" size={24} color="#9ca3af" />
                     </TouchableOpacity>
                   </View>
-                  <Text className="mb-2 text-2xl font-bold text-white">
-                    Enter Verification Code
-                  </Text>
+                  <Text className="mb-2 text-2xl font-bold text-white">Enter Verification Code</Text>
                   <Text className="mb-4 text-gray-300">
                     We've sent a verification code to your email
                   </Text>
                   <TextInput
-                    className="mb-4 rounded-lg border border-gray-600 bg-transparent p-4 text-white"
+                    className="mb-4 rounded-xl border-2 border-gray-600 bg-transparent p-4 text-white"
                     placeholder="Enter verification code"
                     placeholderTextColor="#9ca3af"
                     keyboardType="number-pad"
@@ -298,7 +321,7 @@ export default function SignInScreen() {
                     onChangeText={setCode}
                   />
                   <TouchableOpacity
-                    className="rounded-lg bg-[#10a37f] p-4 active:bg-[#0e906f]"
+                    className="rounded-xl bg-[#10a37f] p-4 shadow-sm active:bg-[#0e906f]"
                     onPress={onOTPSubmit}
                     disabled={isLoading}>
                     {isLoading ? (

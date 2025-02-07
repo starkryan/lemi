@@ -5,36 +5,43 @@ import { ClerkProvider } from '@clerk/clerk-expo';
 import { getRandomValues as expoCryptoGetRandomValues } from 'expo-crypto';
 import { Stack } from 'expo-router';
 import * as React from 'react';
-import { View, StatusBar } from 'react-native';
+import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
-import * as SecureStore from 'expo-secure-store';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { useColorScheme } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 
-// Polyfill for crypto.getRandomValues
-if (typeof crypto === 'undefined') {
-  const crypto = {
+// Ensure crypto polyfill
+if (typeof global.crypto === 'undefined') {
+  global.crypto = {
     getRandomValues: expoCryptoGetRandomValues,
-  };
-  window.crypto = crypto;
+  } as Crypto;
 }
 
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
-
+// Retrieve Clerk publishable key safely
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 if (!publishableKey) {
-  throw new Error('Missing Publishable Key');
+  throw new Error('Missing Clerk Publishable Key');
 }
 
-// Token cache
-
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    // Hide splash screen once the app is ready
+    SplashScreen.hideAsync();
+  }, []);
+
+  // Ensure publishableKey is a string to satisfy type checking
+  const clerkKey = publishableKey as string;
   return (
-    <ClerkProvider
-      tokenCache={tokenCache}
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-    >
-      <ExpoStatusBar style="light" backgroundColor="#343541" />
-      <View className="flex-1" style={{ backgroundColor: '#343541' }}>
+    <ClerkProvider tokenCache={tokenCache} publishableKey={clerkKey}>
+      <StatusBar style="light" backgroundColor="#343541" />
+      <View className="flex-1 bg-[#343541]">
         <Stack
           screenOptions={{
             headerShown: false,
@@ -43,7 +50,6 @@ export default function RootLayout() {
             },
             animation: 'none',
             presentation: 'modal',
-            // Force the background to be opaque
             navigationBarColor: '#343541',
           }}
         >

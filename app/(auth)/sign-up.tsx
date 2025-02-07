@@ -20,7 +20,11 @@ import { Toast } from 'toastify-react-native';
 
 import { useOAuthFlow } from '../../utils/oauth';
 
-class ErrorBoundary extends React.Component {
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
   state = { hasError: false };
 
   static getDerivedStateFromError() {
@@ -162,11 +166,11 @@ export default function SignUpScreen() {
               contentContainerStyle={{ flexGrow: 1 }}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}>
-              <View className="flex-1 justify-center">
+              <View className="flex-1 justify-center py-8">
                 {pendingVerification ? (
-                  <View className="px-6">
-                    <View className="mb-8">
-                      <Text className="mb-2 text-center text-3xl font-bold text-white">
+                  <View className="px-8">
+                    <View className="mb-10">
+                      <Text className="mb-3 text-center text-3xl font-bold text-white">
                         Verify Email
                       </Text>
                       <Text className="text-center text-base text-gray-300">
@@ -176,7 +180,7 @@ export default function SignUpScreen() {
 
                     <View className="mb-6">
                       <TextInput
-                        className="rounded-lg border border-gray-600 bg-transparent p-4 text-white"
+                        className="rounded-xl border-2 border-gray-600 bg-transparent p-4 text-white"
                         value={code}
                         placeholder="Enter verification code"
                         placeholderTextColor="#9ca3af"
@@ -186,7 +190,7 @@ export default function SignUpScreen() {
                     </View>
 
                     <TouchableOpacity
-                      className="rounded-lg bg-[#10a37f] p-4 active:bg-[#0e906f]"
+                      className="rounded-xl bg-[#10a37f] p-4 shadow-sm active:bg-[#0e906f]"
                       onPress={onVerifyPress}
                       disabled={isLoading}>
                       {isLoading ? (
@@ -200,23 +204,23 @@ export default function SignUpScreen() {
                   </View>
                 ) : (
                   <>
-                    <View className="mb-8 px-6">
-                      <Text className="mb-2 text-center text-3xl font-bold text-white">Sign up</Text>
+                    <View className="mb-10 px-8">
+                      <Text className="mb-3 text-center text-3xl font-bold text-white">Sign up</Text>
                       <Text className="text-center text-base text-gray-300">to continue to Lemi</Text>
                     </View>
 
                     {/* Social Login Button */}
-                    <View className="mb-8 px-6">
+                    <View className="mb-8 px-8">
                       <TouchableOpacity
-                        onPress={() => onSelectOAuth('oauth_google')}
+                        onPress={onSelectOAuth}
                         disabled={isLoading}
-                        className="w-full flex-row items-center justify-center space-x-3 rounded-lg border border-gray-600 bg-transparent px-4 py-3">
+                        className="w-full flex-row items-center justify-center space-x-3 rounded-xl border-2 border-gray-600 bg-transparent px-4 py-3.5">
                         {isLoading ? (
                           <ActivityIndicator color="white" />
                         ) : (
                           <>
                             <Image source={require('../../assets/google.png')} className="h-6 w-6" />
-                            <Text className="ml-2 text-base font-medium text-white">
+                            <Text className="text-base font-medium text-white ml-2">
                               Continue with Google
                             </Text>
                           </>
@@ -225,18 +229,18 @@ export default function SignUpScreen() {
                     </View>
 
                     {/* Divider */}
-                    <View className="mb-8 flex-row items-center px-6">
+                    <View className="mb-8 flex-row items-center px-8">
                       <View className="h-[1px] flex-1 bg-gray-600" />
                       <Text className="mx-4 text-gray-300">or</Text>
                       <View className="h-[1px] flex-1 bg-gray-600" />
                     </View>
 
                     {/* Form */}
-                    <View className="space-y-4 px-6">
+                    <View className="space-y-5 px-8">
                       <View>
                         <Text className="mb-2 font-medium text-gray-300">Email address</Text>
                         <TextInput
-                          className="rounded-lg border border-gray-600 bg-transparent p-4 text-white"
+                          className="rounded-xl border-2 border-gray-600 bg-transparent p-4 text-white"
                           autoCapitalize="none"
                           value={emailAddress}
                           placeholder="Enter email"
@@ -247,10 +251,10 @@ export default function SignUpScreen() {
                       </View>
 
                       <View>
-                        <Text className="mb-2 font-medium text-gray-300">Password</Text>
+                        <Text className="mb-2 mt-2 font-medium text-gray-300">Password</Text>
                         <View className="relative">
                           <TextInput
-                            className={`rounded-lg border bg-transparent p-4 pr-12 text-white ${
+                            className={`rounded-xl border-2 bg-transparent p-4 pr-12 text-white ${
                               !isPasswordValid && password.length > 0
                                 ? 'border-red-500'
                                 : 'border-gray-600'
@@ -281,9 +285,9 @@ export default function SignUpScreen() {
                     </View>
 
                     {/* Sign Up Button */}
-                    <View className="mt-6 px-6">
+                    <View className="mt-8 px-8">
                       <TouchableOpacity
-                        className="rounded-lg bg-[#10a37f] p-4 active:bg-[#0e906f]"
+                        className="rounded-xl bg-[#10a37f] p-4 shadow-sm active:bg-[#0e906f]"
                         onPress={onSignUpPress}
                         disabled={isLoading}>
                         {isLoading ? (
