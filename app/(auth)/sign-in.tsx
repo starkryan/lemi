@@ -108,15 +108,15 @@ export default function SignInScreen() {
 
   if (!isLoaded) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#FF0000" />
+      <View className="flex-1 items-center justify-center bg-[#343541]">
+        <ActivityIndicator size="large" color="#10a37f" />
       </View>
     );
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-[#343541]">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           className="flex-1">
@@ -126,17 +126,17 @@ export default function SignInScreen() {
             showsVerticalScrollIndicator={false}>
             <View className="flex-1 justify-center">
               <View className="mb-8 px-6">
-                <Text className="mb-2 text-center text-3xl font-bold text-black">Sign in</Text>
-                <Text className="text-center text-base text-gray-600">to continue to Lemi</Text>
+                <Text className="mb-2 text-center text-3xl font-bold text-white">Sign in</Text>
+                <Text className="text-center text-base text-gray-300">to continue to Lemi</Text>
               </View>
 
               {/* Social Login Button */}
               <View className="mb-8 px-6">
                 <TouchableOpacity
                   onPress={() => onSelectOAuth('oauth_google')}
-                  className="w-full flex-row items-center justify-center space-x-3 rounded-full border border-gray-300 bg-white px-4 py-3">
+                  className="w-full flex-row items-center justify-center space-x-3 rounded-lg border border-gray-600 bg-transparent px-4 py-3">
                   <Image source={require('../../assets/google.png')} className="h-6 w-6" />
-                  <Text className="ml-2 text-base font-medium text-black">
+                  <Text className="ml-2 text-base font-medium text-white">
                     Continue with Google
                   </Text>
                 </TouchableOpacity>
@@ -144,17 +144,17 @@ export default function SignInScreen() {
 
               {/* Divider */}
               <View className="mb-8 flex-row items-center px-6">
-                <View className="h-[1px] flex-1 bg-gray-300" />
-                <Text className="mx-4 text-gray-500">or</Text>
-                <View className="h-[1px] flex-1 bg-gray-300" />
+                <View className="h-[1px] flex-1 bg-gray-600" />
+                <Text className="mx-4 text-gray-300">or</Text>
+                <View className="h-[1px] flex-1 bg-gray-600" />
               </View>
 
               {/* Email Input */}
               <View className="mb-6 space-y-4 px-6">
                 <View>
-                  <Text className="mb-2 font-medium text-gray-700">Email address</Text>
+                  <Text className="mb-2 font-medium text-gray-300">Email address</Text>
                   <TextInput
-                    className="rounded-lg border border-gray-300 bg-white p-4"
+                    className="rounded-lg border border-gray-600 bg-transparent p-4 text-white"
                     autoCapitalize="none"
                     value={emailAddress}
                     placeholder="Enter your email"
@@ -168,23 +168,23 @@ export default function SignInScreen() {
               {/* Continue Button */}
               <View className="px-6">
                 <TouchableOpacity
-                  className="mb-6 rounded-full bg-[#FF0000] p-4"
+                  className="w-full rounded-lg bg-[#10a37f] py-4 active:bg-[#0e906f]"
                   onPress={onEmailSubmit}
                   disabled={isLoading}>
                   {isLoading ? (
                     <ActivityIndicator color="white" />
                   ) : (
-                    <Text className="text-center text-base font-semibold text-white">Continue</Text>
+                    <Text className="text-center text-lg font-semibold text-white">Continue</Text>
                   )}
                 </TouchableOpacity>
               </View>
 
               {/* Sign Up Link */}
-              <View className="flex-row justify-center">
-                <Text className="text-gray-600">Don't have an account? </Text>
+              <View className="mt-6 flex-row justify-center">
+                <Text className="text-gray-300">Don't have an account? </Text>
                 <Link href="/(auth)/sign-up" asChild>
                   <TouchableOpacity>
-                    <Text className="font-semibold text-[#FF0000]">Sign up</Text>
+                    <Text className="font-semibold text-[#10a37f]">Sign up</Text>
                   </TouchableOpacity>
                 </Link>
               </View>
@@ -202,15 +202,15 @@ export default function SignInScreen() {
           <TouchableWithoutFeedback onPress={() => setShowPasswordModal(false)}>
             <View className="flex-1 justify-end bg-black/50">
               <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-                <View className="rounded-t-3xl bg-white p-6">
+                <View className="rounded-t-3xl bg-[#343541] p-6">
                   <View className="mb-1 items-end">
                     <TouchableOpacity onPress={() => setShowPasswordModal(false)}>
-                      <FontAwesome name="times" size={24} color="#666" />
+                      <FontAwesome name="times" size={24} color="#9ca3af" />
                     </TouchableOpacity>
                   </View>
-                  <Text className="mb-4 text-2xl font-bold text-black">Enter Password</Text>
+                  <Text className="mb-4 text-2xl font-bold text-white">Enter Password</Text>
                   <TextInput
-                    className="mb-4 rounded-lg border border-gray-300 bg-white p-4"
+                    className="mb-4 rounded-lg border border-gray-600 bg-transparent p-4 text-white"
                     placeholder="Enter your password"
                     placeholderTextColor="#9ca3af"
                     secureTextEntry
@@ -218,13 +218,13 @@ export default function SignInScreen() {
                     onChangeText={setPassword}
                   />
                   <TouchableOpacity
-                    className="rounded-full bg-[#FF0000] p-4"
+                    className="rounded-lg bg-[#10a37f] p-4 active:bg-[#0e906f]"
                     onPress={onPasswordSubmit}
                     disabled={isLoading}>
                     {isLoading ? (
                       <ActivityIndicator color="white" />
                     ) : (
-                      <Text className="text-center text-base font-semibold text-white">
+                      <Text className="text-center text-lg font-semibold text-white">
                         Sign In
                       </Text>
                     )}
@@ -245,20 +245,20 @@ export default function SignInScreen() {
           <TouchableWithoutFeedback onPress={() => setShowOTPModal(false)}>
             <View className="flex-1 justify-end bg-black/50">
               <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-                <View className="rounded-t-3xl bg-white p-6">
+                <View className="rounded-t-3xl bg-[#343541] p-6">
                   <View className="mb-1 items-end">
                     <TouchableOpacity onPress={() => setShowOTPModal(false)}>
-                      <FontAwesome name="times" size={24} color="#666" />
+                      <FontAwesome name="times" size={24} color="#9ca3af" />
                     </TouchableOpacity>
                   </View>
-                  <Text className="mb-2 text-2xl font-bold text-black">
+                  <Text className="mb-2 text-2xl font-bold text-white">
                     Enter Verification Code
                   </Text>
-                  <Text className="mb-4 text-gray-600">
+                  <Text className="mb-4 text-gray-300">
                     We've sent a verification code to your email
                   </Text>
                   <TextInput
-                    className="mb-4 rounded-lg border border-gray-300 bg-white p-4"
+                    className="mb-4 rounded-lg border border-gray-600 bg-transparent p-4 text-white"
                     placeholder="Enter verification code"
                     placeholderTextColor="#9ca3af"
                     keyboardType="number-pad"
@@ -266,13 +266,13 @@ export default function SignInScreen() {
                     onChangeText={setCode}
                   />
                   <TouchableOpacity
-                    className="rounded-full bg-[#FF0000] p-4"
+                    className="rounded-lg bg-[#10a37f] p-4 active:bg-[#0e906f]"
                     onPress={onOTPSubmit}
                     disabled={isLoading}>
                     {isLoading ? (
                       <ActivityIndicator color="white" />
                     ) : (
-                      <Text className="text-center text-base font-semibold text-white">Verify</Text>
+                      <Text className="text-center text-lg font-semibold text-white">Verify</Text>
                     )}
                   </TouchableOpacity>
                 </View>

@@ -23,6 +23,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 // Environment configuration (should use actual environment variables in production)
 const CONFIG = {
   GEMINI_API_KEY: Constants.expoConfig?.extra?.GOOGLE_GEMINI_API_KEY || '',
+  THEME_COLOR: '#10a37f', // Primary green color
+  BG_COLOR: '#343541',    // Dark background color
 };
 
 interface DropdownSelectProps {
@@ -40,7 +42,7 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, selected, onSe
 
   return (
     <View className="mb-4">
-      <Text className="mb-2 text-sm font-bold text-gray-700">{label}</Text>
+      <Text className="mb-2 text-sm font-bold text-gray-300">{label}</Text>
       <Dropdown
         data={dropdownData}
         value={selected}
@@ -49,14 +51,14 @@ const DropdownSelect: React.FC<DropdownSelectProps> = ({ options, selected, onSe
         valueField="value"
         placeholder="Select option"
         placeholderStyle={{ color: '#9CA3AF', fontSize: 12 }}
-        selectedTextStyle={{ color: '#111827', fontSize: 12, fontWeight: '500' }}
+        selectedTextStyle={{ color: '#ffffff', fontSize: 12, fontWeight: '500' }}
         style={{
-          borderColor: '#D1D5DB',
+          borderColor: '#4b5563',
           borderWidth: 1,
           borderRadius: 10,
           paddingHorizontal: 8,
           height: 32,
-          backgroundColor: 'white',
+          backgroundColor: '#2a2b32',
           justifyContent: 'center',
         }}
         containerStyle={{
@@ -224,26 +226,26 @@ const MainPage = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-[#343541]">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1">
         <ScrollView keyboardShouldPersistTaps="handled" className="px-4">
           {/* Header */}
           <View className="items-center justify-center gap-2 py-6">
-            <AntDesign name="edit" size={32} color="#19C37D" />
-            <Text className="text-2xl font-bold text-gray-700">Script Generator</Text>
+            <AntDesign name="edit" size={32} color="#10a37f" />
+            <Text className="text-2xl font-bold text-white">Script Generator</Text>
           </View>
 
           {/* Topic Input */}
           <View className="mb-4">
-            <Text className="mb-2 text-lg font-bold text-gray-700">Video Topic</Text>
+            <Text className="mb-2 text-lg font-bold text-gray-300">Video Topic</Text>
             <TextInput
               placeholder="Enter your main topic or keyword..."
               value={topic}
               onChangeText={setTopic}
               multiline
-              className="min-h-[100px] rounded-xl border border-gray-300 bg-white p-4 text-gray-900"
+              className="min-h-[100px] rounded-xl border border-gray-600 bg-[#2a2b32] p-4 text-white"
               accessibilityLabel="Video topic input"
               placeholderTextColor="#9CA3AF"
             />
@@ -270,7 +272,7 @@ const MainPage = () => {
 
           {/* Generate Button */}
           <TouchableOpacity
-            className="mb-6 items-center justify-center rounded-xl bg-green-500 p-4"
+            className="mb-6 items-center justify-center rounded-xl bg-[#10a37f] p-4 active:bg-[#0e906f]"
             onPress={generateScript}
             disabled={loading}
             accessibilityRole="button">
@@ -289,8 +291,8 @@ const MainPage = () => {
 
           {/* Generated Script */}
           {script && (
-            <ScrollView className="mb-4 rounded-xl border-2 border-gray-200 bg-white p-4">
-              <Text className="mb-4 text-lg font-bold text-gray-700">Your Script</Text>
+            <ScrollView className="mb-4 rounded-xl border border-gray-600 bg-[#2a2b32] p-4">
+              <Text className="mb-4 text-lg font-bold text-white">Your Script</Text>
 
               <View className="mb-4 flex-row justify-between gap-2">
                 <ActionButton
@@ -307,23 +309,23 @@ const MainPage = () => {
 
               <Markdown
                 style={{
-                  body: { color: '#1F2937', lineHeight: 22 },
-                  heading1: { fontSize: 20, fontWeight: 'bold', marginVertical: 12 },
-                  heading2: { fontSize: 18, fontWeight: '600', marginVertical: 10 },
-                  paragraph: { marginVertical: 8 },
-                  list_item: { marginVertical: 4 },
-                  code_inline: { backgroundColor: '#E5E7EB', padding: 4, borderRadius: 4 },
+                  body: { color: '#ffffff', lineHeight: 22 },
+                  heading1: { color: '#ffffff', fontSize: 20, fontWeight: 'bold', marginVertical: 12 },
+                  heading2: { color: '#ffffff', fontSize: 18, fontWeight: '600', marginVertical: 10 },
+                  paragraph: { color: '#ffffff', marginVertical: 8 },
+                  list_item: { color: '#ffffff', marginVertical: 4 },
+                  code_inline: { backgroundColor: '#4b5563', padding: 4, borderRadius: 4 },
                   blockquote: {
                     marginVertical: 8,
                     paddingLeft: 16,
                     borderLeftWidth: 4,
-                    borderLeftColor: '#E5E7EB',
+                    borderLeftColor: '#4b5563',
                   },
-                  blockquote_content: { color: '#1F2937', fontStyle: 'italic' },
-                  blockquote_author: { color: '#1F2937', fontWeight: 'bold' },
-                  blockquote_source: { color: '#1F2937', fontStyle: 'italic' },
-                  blockquote_source_url_text_url_text: { color: '#1F2937', fontWeight: 'bold' },
-                  paragraph_link: { color: '#1F2937', textDecorationLine: 'underline' },
+                  blockquote_content: { color: '#ffffff', fontStyle: 'italic' },
+                  blockquote_author: { color: '#ffffff', fontWeight: 'bold' },
+                  blockquote_source: { color: '#ffffff', fontStyle: 'italic' },
+                  blockquote_source_url_text_url_text: { color: '#ffffff', fontWeight: 'bold' },
+                  paragraph_link: { color: '#10a37f', textDecorationLine: 'underline' },
                 }}>
                 {script}
               </Markdown>

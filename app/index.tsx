@@ -43,8 +43,8 @@ const GetStartedScreen = () => {
 
   if (!isLoaded) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#4f46e5" />
+      <View className="flex-1 items-center justify-center bg-[#343541]">
+        <ActivityIndicator size="large" color="#10a37f" />
       </View>
     );
   }
@@ -54,8 +54,8 @@ const GetStartedScreen = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <LinearGradient colors={['#ffffff', '#f3f4f6', '#e5e7eb']} className="flex-1">
+    <SafeAreaView className="flex-1 bg-[#343541]">
+      <View className="flex-1">
         {/* Hero Section with Animation */}
         <Animated.View
           style={{
@@ -68,47 +68,35 @@ const GetStartedScreen = () => {
           }}>
           <Image
             source={require('../assets/splash.png')}
-            style={{ width: width * 0.8, height: width * 0.8 }}
+            style={{ width: width * 0.5, height: width * 0.5 }}
             resizeMode="contain"
           />
 
-          <Text className="mt-8 text-center text-3xl font-bold text-gray-800">Welcome to Lemi</Text>
-          <Text className="mt-4 px-6 text-center text-base text-gray-600">
-            Your personal learning companion. Start your journey to mastery today.
+          <Text className="mt-8 text-center text-3xl font-bold text-white">Welcome to Lemi</Text>
+          <Text className="mt-4 px-6 text-center text-base text-gray-300">
+            Your AI-powered learning companion. Start exploring and learning today.
           </Text>
         </Animated.View>
 
         {/* Buttons Section */}
         <View className="gap-4 px-6 pb-12">
           <Link href="/(auth)/sign-up" asChild>
-            <TouchableOpacity className="w-full rounded-xl bg-blue-600 py-4 active:bg-blue-700">
+            <TouchableOpacity className="w-full rounded-lg bg-[#10a37f] py-4 active:bg-[#0e906f]">
               <Text className="text-center text-lg font-semibold text-white">Get Started</Text>
             </TouchableOpacity>
           </Link>
 
           <Link href="/(auth)/sign-in" asChild>
-            <TouchableOpacity className="w-full rounded-xl border border-gray-300 bg-white/80 py-4 active:bg-gray-100">
-              <Text className="text-center text-lg font-semibold text-gray-700">
+            <TouchableOpacity className="w-full rounded-lg border border-gray-600 bg-transparent py-4 active:bg-gray-800">
+              <Text className="text-center text-lg font-semibold text-white">
                 I already have an account
               </Text>
             </TouchableOpacity>
           </Link>
         </View>
-      </LinearGradient>
+      </View>
     </SafeAreaView>
   );
 };
 
-export default function Index() {
-  const { isSignedIn, isLoaded } = useAuth();
-
-  if (!isLoaded) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#4f46e5" />
-      </View>
-    );
-  }
-
-  return <Redirect href={isSignedIn ? '/(app)' : '/(auth)/sign-in'} />;
-}
+export default GetStartedScreen;

@@ -4,7 +4,7 @@ import { ClerkProvider } from '@clerk/clerk-expo';
 import { getRandomValues as expoCryptoGetRandomValues } from 'expo-crypto';
 import { Slot } from 'expo-router';
 import * as React from 'react';
-import { View } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { tokenCache } from '../utils/cache';
@@ -26,7 +26,8 @@ if (!publishableKey) {
 export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <View className="flex-1 bg-[#282828]">
+      <View className="flex-1 bg-[#343541]">
+        <StatusBar barStyle="light-content" backgroundColor="#343541" />
         <Slot />
         <Toast />
       </View>
